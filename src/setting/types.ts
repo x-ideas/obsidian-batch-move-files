@@ -8,4 +8,10 @@ export interface ISettings {
    * @default [visible]:true and [draft]:false
    */
   includes: string;
+
+  /**
+   * skip file when exist
+   * @default true
+   */
+  skipFileWhenExist: boolean;
 }

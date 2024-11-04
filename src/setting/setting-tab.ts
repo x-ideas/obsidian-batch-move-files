@@ -29,7 +29,7 @@ export class SettingTab extends PluginSettingTab {
 
     // which file should sync
     new Setting(containerEl)
-      .setName('Sync Files')
+      .setName('includes Files')
       .setDesc('which file shoud include in sync')
       .addText(text => {
         text
@@ -37,6 +37,18 @@ export class SettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.includes)
           .onChange(async value => {
             this.plugin.settings.includes = value;
+            await this.plugin.saveSettings();
+          });
+      });
+
+    new Setting(containerEl)
+      .setName('skip file when exist')
+      .setDesc('when the dist folder has same file, how to deal with it')
+      .addToggle(toggle => {
+        toggle
+          .setValue(this.plugin.settings.skipFileWhenExist)
+          .onChange(async value => {
+            this.plugin.settings.skipFileWhenExist = value;
             await this.plugin.saveSettings();
           });
       });

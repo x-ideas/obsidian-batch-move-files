@@ -1,11 +1,10 @@
 {
-  "id": "sync-to-astro",
-  "name": "sync to astro",
+  "id": "move-files",
+  "name": "move files",
   "version": "0.0.1",
   "minAppVersion": "0.15.0",
-  "description": "sync files to astro project.s",
-  "author": "Obsidian",
+  "description": "move file and relative links will be updated automatically",
+  "author": "xjiaxiang_86@163.com",
   "authorUrl": "https://obsidian.md",
-  "fundingUrl": "https://obsidian.md/pricing",
   "isDesktopOnly": true
 }

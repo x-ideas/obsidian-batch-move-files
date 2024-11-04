@@ -6,6 +6,7 @@ import type { ISettings } from './types';
 const DefaultSetting: ISettings = {
   dist: '',
   includes: '[visible]:true and [draft]:false',
+  skipFileWhenExist: true,
 };
 
 export { DefaultSetting };

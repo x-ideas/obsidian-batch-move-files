@@ -1,22 +1,77 @@
-import { describe, vi, beforeEach } from 'vitest';
+import { describe, vi, it, expect, beforeEach } from 'vitest';
+import type { App, TFile, Vault } from 'obsidian';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { mkdir } from 'node:fs/promises';
 
 import { vol } from 'memfs';
-// import { moveObFileToAstroFile } from '../../api/sync-file';
+import { moveObFileToAstroFile } from '../../api/index.js';
 
-vi.mock('fs/promises');
+vi.unmock('node:fs/promises');
+vi.mock('fs');
+vi.mock('node:fs/promises');
+
+// vi.mock('node:fs');
+
+// __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 beforeEach(() => {
   vol.reset();
 });
 
-// mock obsidian
-// const app = {
-//   vault: {
-//     read: '',
-//   },
-// };
+describe('sync-file', () => {
+  it('only current file', async () => {
+    const getFirstLinkpathDestFn = vi.fn().mockImplementation(() => {
+      return '/asserts/ww';
+    });
+    const readFn = vi.fn().mockImplementation(async () => {
+      const vfs = await vi.importActual<{
+        readFile: (path: string, opt?: unknown) => Promise<string>;
+      }>('fs/promises');
 
-describe('sync-file', () => {});
+      // read ./mds/no-links.input.md
+      const content = await vfs.readFile(
+        path.resolve(__dirname, './mds/no-links.input.md'),
+        'utf-8',
+      );
+
+      console.log('content', content);
+      return content;
+    });
+    const app = {
+      vault: {
+        read: readFn,
+      },
+      metadataCache: {
+        getFirstLinkpathDest: getFirstLinkpathDestFn,
+      },
+    } as unknown as App;
+
+    const file: TFile = {
+      vault: app.vault as unknown as Vault,
+      path: '',
+      name: 'no-links.input.md',
+      extension: 'md',
+      basename: 'no-links.input',
+      stat: {
+        ctime: Date.now(),
+        mtime: Date.now(),
+        size: 0,
+      },
+      parent: null,
+    };
+
+    await moveObFileToAstroFile(file, '/valid/path', { app });
+
+    expect(readFn).toHaveBeenCalledWith(file);
+    expect(getFirstLinkpathDestFn).not.toHaveBeenCalled();
+    expect(mkdir).toHaveBeenCalledWith('/valid/path', { recursive: true });
+
+    expect(1).toBe(1);
+  });
+});
 
 // describe('sync-file', () => {
 //   // Verifies that the content is read from the TFile without any data loss.
