@@ -1,4 +1,4 @@
 export default {
-  '*.md': 'prettier --write',
-  '*.{ts,js,cjs,mjs,tsx}': ['eslint --fix', 'prettier --write'],
+	"*.md": "biome format --write",
+	"*.{ts,js,cjs,mjs,tsx}": ["biome format"],
 };
