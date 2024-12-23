@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-move-file-plugin",
-	"version": "1.0.0",
-	"description": "A plugin for Obsidian that allows you to move file and relative links will be updated automatically.",
+	"version": "0.0.1",
+	"description": "A plugin for Obsidian that allows you to move file and relative links will be move automatically.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "vite build --watch",
