@@ -3,9 +3,10 @@ import type { Config } from "release-it";
 export default {
 	git: {
 		commitMessage: "chore: release v${version}",
+		requireUpstream: false,
 	},
 	github: {
-		release: true,
+		release: false,
 	},
 	npm: {
 		publish: false,
