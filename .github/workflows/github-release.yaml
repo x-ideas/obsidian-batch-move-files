@@ -41,11 +41,6 @@ jobs:
     needs: build
 
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifact
-
       - name: Checkout code
         uses: actions/checkout@v3
 
