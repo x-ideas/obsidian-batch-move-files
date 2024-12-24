@@ -27,7 +27,14 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build the project
-        run: pnpm run build
+        run:
+          pnpm run build
+
+          # 配置 Git 用户信息
+      - name: Configure Git
+        run: |
+          git config --global user.name "xjiaxiang"
+          git config --global user.email "xjiaxiang_86@163.com"
 
       - name: release-it
         run: pnpm run changelog
