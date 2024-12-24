@@ -6,15 +6,15 @@ on:
       - "v*" # 仅当推送标签时触发，例如 v1.0.0
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 22 # 指定 Node.js 版本
 
@@ -25,47 +25,17 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build the project
-        run: npm run build # 确保你的项目中定义了一个 "build" 脚本
+        run: pnpm run build
 
-      - name: Archive the build
-        run: mv dist batch-move-files && zip -r build.zip ./batch-move-files # 将构建输出打包为 ZIP 文件
+      - name: Archive build artifact
+        run: mv dist batch-move-files && zip -r build.zip ./batch-move-files
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-artifact
-          path: build.zip
-
-  release:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifact
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: create github release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref_name }} # 使用当前推送的标签
-          release_name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build.zip
-          asset_name: build.zip
-          asset_content_type: application/zip
+          tag: ${{ github.ref_name }}
+        run: |
+          gh release create "$tag" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
+              --generate-notes ./build.zip
