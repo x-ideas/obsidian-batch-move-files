@@ -4,6 +4,10 @@ on:
   push:
     tags:
       - "v*" # 仅当推送标签时触发，例如 v1.0.0
+  workflow_run:
+    workflows: ["Merge Request"]
+    types:
+      - completed
 
 jobs:
   release:
