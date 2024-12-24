@@ -28,7 +28,7 @@ jobs:
         run: npm run build # 确保你的项目中定义了一个 "build" 脚本
 
       - name: Archive the build
-        run: zip -r build.zip ./dist # 将构建输出打包为 ZIP 文件
+        run: mv dist batch-move-files && zip -r build.zip ./batch-move-files # 将构建输出打包为 ZIP 文件
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
