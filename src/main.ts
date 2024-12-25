@@ -1,23 +1,23 @@
-import { MarkdownView, Notice, Plugin, TFile } from "obsidian";
+import { MarkdownView, Notice, Plugin, TFile, TFolder } from "obsidian";
 import { moveFiles } from "./api/move-files.js";
 import { FolderSuggestModal } from "./target-select-modal/index.js";
-
-// Remember to rename these classes and interfaces!
+import { getI18nInst } from "./configs/i18n.js";
 
 export default class MoveFiles extends Plugin {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	// settings: ISettings;
-
 	async onload() {
-		// await this.loadSettings();
+		const name = getI18nInst().t("Batch Move");
 
 		this.registerEvent(
 			// add file context menu
 			this.app.workspace.on("file-menu", (menu, file) => {
+				// exclude folder
+				if (file instanceof TFolder) {
+					return;
+				}
+
 				menu.addItem((item) => {
 					item.setIcon("circle-arrow-right");
-					item.setTitle("Batch Move");
+					item.setTitle(name);
 					item.onClick(async () => {
 						// if file is TFile
 						if (file instanceof TFile) {
@@ -34,7 +34,7 @@ export default class MoveFiles extends Plugin {
 			this.app.workspace.on("editor-menu", (menu, _editor, view) => {
 				menu.addItem((item) => {
 					item.setIcon("circle-arrow-right");
-					item.setTitle("Batch Move");
+					item.setTitle(name);
 					item.onClick(async () => {
 						// gei current file
 						const file = view.file;
@@ -50,14 +50,11 @@ export default class MoveFiles extends Plugin {
 		// add command
 		this.addCommand({
 			id: "circle-arrow-right",
-			name: "Batch Move",
+			name: name,
 			callback: async () => {
 				await this.syncCurrentFile();
 			},
 		});
-
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		// this.addSettingTab(new SettingTab(this.app, this));
 	}
 
 	onunload() {}
@@ -100,9 +97,4 @@ export default class MoveFiles extends Plugin {
 	async saveSettings() {
 		// await this.saveData(this.settings);
 	}
-
-	/**
-	 * Expored API
-	 */
-	api = {};
 }
