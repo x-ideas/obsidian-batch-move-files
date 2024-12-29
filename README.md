@@ -1,12 +1,9 @@
-# Obsidian Sync to Astro
+# Obsidian Batch move files
 
-用来将Obsidian中的md文件同步到astro项目中，同步的文件的内容将会被改造为astro支持的格式。主要有
+move file and all the inlinks in the file tree to a new folder.
 
-特性：
+## How to use
+1. from folder tree
+2. from opened file setting(the top right corner icon)
+3. from command (Batch move file)
 
-- 自动的将obsidian中的图片引用`[[]]`引用会被变成符合标准markdown格式的引用。
-- 内置可视化的管理页面
-- API
-- 提供quickadd的模板，用于快速创建可以同步的blog（待定）
-
-## 使用

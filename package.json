@@ -8,12 +8,13 @@
 		"build": "vite build && cp manifest.json dist/",
 		"changelog": "pnpm release-it --ci --no-git.push",
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
-		"lint": "eslint .",
+		"lint": "biome check",
+		"lint:fix": "biome check --fix",
 		"test": "vitest",
 		"prepare": "husky"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": ["obsidian", "plugin", "batch move"],
+	"author": "xjiaxiang_86@163.com",
 	"license": "MIT",
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",

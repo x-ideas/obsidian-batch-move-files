@@ -1,7 +1,7 @@
 import { MarkdownView, Notice, Plugin, TFile, TFolder } from "obsidian";
 import { moveFiles } from "./api/move-files.js";
-import { FolderSuggestModal } from "./target-select-modal/index.js";
 import { getI18nInst } from "./configs/i18n.js";
+import { FolderSuggestModal } from "./target-select-modal/index.js";
 
 export default class MoveFiles extends Plugin {
 	async onload() {
