@@ -6,7 +6,7 @@ import type { App, TFile, Vault } from "obsidian";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { vol } from "memfs";
-import { moveObFileToAstroFile } from "../../api/index.js";
+import { moveObFile } from "../../api/index.js";
 
 vi.unmock("node:fs/promises");
 vi.mock("fs");
@@ -64,7 +64,7 @@ describe("sync-file", () => {
 			parent: null,
 		};
 
-		await moveObFileToAstroFile(file, "/valid/path", { app });
+		await moveObFile(file, "/valid/path", { app });
 
 		expect(readFn).toHaveBeenCalledWith(file);
 		expect(getFirstLinkpathDestFn).not.toHaveBeenCalled();
@@ -91,7 +91,7 @@ describe("sync-file", () => {
 //     const mockOpt = { app: mockApp };
 //     const distFolder = '/valid/path';
 
-//     await moveObFileToAstroFile(mockFile, distFolder, mockOpt);
+//     await moveObFile(mockFile, distFolder, mockOpt);
 
 //     expect(mockVault.read).toHaveBeenCalledWith(mockFile);
 //     // Add assertions to check if writeFile was called with correct arguments
@@ -105,7 +105,7 @@ describe("sync-file", () => {
 //     const mockOpt = { app: mockApp };
 //     const distFolder = '/valid/path';
 
-//     await moveObFileToAstroFile(mockFile, distFolder, mockOpt);
+//     await moveObFile(mockFile, distFolder, mockOpt);
 
 //     expect(mockVault.read).toHaveBeenCalledWith(mockFile);
 //     // Add assertions to check if writeFile was called with correct arguments
@@ -119,7 +119,7 @@ describe("sync-file", () => {
 //     const mockOpt = { app: mockApp };
 //     const distFolder = '/valid/path';
 
-//     await moveObFileToAstroFile(mockFile, distFolder, mockOpt);
+//     await moveObFile(mockFile, distFolder, mockOpt);
 
 //     expect(mockVault.read).toHaveBeenCalledWith(mockFile);
 //     // Add assertions to check if writeFile was called with correct arguments
@@ -133,7 +133,7 @@ describe("sync-file", () => {
 //     const mockOpt = { app: mockApp };
 //     const distFolder = '/valid/path';
 
-//     await moveObFileToAstroFile(mockFile, distFolder, mockOpt);
+//     await moveObFile(mockFile, distFolder, mockOpt);
 
 //     expect(mockVault.read).toHaveBeenCalledWith(mockFile);
 //     // Add assertions to check if writeFile was called with correct arguments
@@ -147,7 +147,7 @@ describe("sync-file", () => {
 //     const mockOpt = { app: mockApp };
 //     const distFolder = '/valid/path';
 
-//     await moveObFileToAstroFile(mockFile, distFolder, mockOpt);
+//     await moveObFile(mockFile, distFolder, mockOpt);
 
 //     expect(mockVault.read).toHaveBeenCalledWith(mockFile);
 //     expect(mkdir).toHaveBeenCalledWith(distFolder, { recursive: true });

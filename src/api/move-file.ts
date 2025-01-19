@@ -1,10 +1,13 @@
 // biome-ignore lint/style/useNodejsImportProtocol: <explanation>
+import { dirname } from "path";
+// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import { existsSync } from "fs";
-import type { App, TFile } from "obsidian";
+
+import { normalizePath, TFile, TFolder, type App } from "obsidian";
 import { getDistFilePath } from "./get-dist";
 
 /**
- * option for function moveFiles
+ * option for function moveFileAndInlinks
  */
 export interface IMoveFileToAstroOpt {
 	/**
@@ -21,11 +24,9 @@ export interface IMoveFileToAstroOpt {
 	 * @default true
 	 */
 	skipFileWhenExist?: boolean;
-
-	shouldModifyLink?: boolean;
 }
 
-export interface IMoveObFileToAstroFileResult {
+export interface ImoveObFileResult {
 	/** is moved to dist */
 	moved?: boolean;
 	/** is not moved to dist */
@@ -41,12 +42,14 @@ export interface IMoveObFileToAstroFileResult {
 
 /**
  * move obsidian file to distFolder(only file，not include relative files)
+ * @param file obsidian file
+ * @param distFolder destination folder path in the vault, relative to the vault root, for example: "folder/subfolder"
  */
-export async function moveObFileToAstroFile(
+export async function moveObFile(
 	file: TFile,
 	distFolder: string,
 	opt: IMoveFileToAstroOpt,
-): Promise<IMoveObFileToAstroFileResult> {
+): Promise<ImoveObFileResult> {
 	const { app, skipFileWhenExist = true } = opt;
 
 	// find file inlinks
@@ -60,6 +63,21 @@ export async function moveObFileToAstroFile(
 				link.link,
 				file.path,
 			);
+
+			if (inlinkFile) {
+				inlinkFiles.add(inlinkFile);
+			}
+		}
+	}
+
+	if (fileCache?.embeds) {
+		for (const embed of fileCache.embeds) {
+			// get embed file
+			const inlinkFile = app.metadataCache.getFirstLinkpathDest(
+				embed.link,
+				file.path,
+			);
+
 			if (inlinkFile) {
 				inlinkFiles.add(inlinkFile);
 			}
@@ -67,9 +85,15 @@ export async function moveObFileToAstroFile(
 	}
 
 	const distPath = getDistFilePath(file, distFolder);
+	const realDistFolder = dirname(distPath);
+
+	// folder is exist
+	if (!isFolderExist(realDistFolder, app)) {
+		await app.vault.adapter.mkdir(normalizePath(realDistFolder));
+	}
 
 	// use node fs api to judge whether the file exists
-	const isExist = existsSync(distPath);
+	const isExist = isFileExist(distPath, app);
 	if (isExist && skipFileWhenExist) {
 		return { skiped: true };
 	}
@@ -83,4 +107,33 @@ export async function moveObFileToAstroFile(
 
 		inlinkFiles,
 	};
+}
+
+/**
+ * check whether the folder is exist
+ * @param folderPath folder path, relative to the vault root, for example: "folder/subfolder"
+ * @param app obsidian app instance
+ */
+function isFolderExist(folderPath: string, app: App): boolean {
+	const vault = app.vault;
+	const folder = vault.getAbstractFileByPath(folderPath);
+
+	if (!folder) {
+		return false;
+	}
+
+	// 检查文件夹是否存在并且是一个文件夹
+	return folder instanceof TFolder;
+}
+
+function isFileExist(filePath: string, app: App): boolean {
+	const vault = app.vault;
+	const file = vault.getAbstractFileByPath(filePath);
+
+	if (!file) {
+		return false;
+	}
+
+	// 检查文件是否存在并且是一个文件
+	return file instanceof TFile;
 }

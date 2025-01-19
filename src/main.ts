@@ -1,9 +1,9 @@
 import { MarkdownView, Notice, Plugin, TFile, TFolder } from "obsidian";
-import { moveFiles } from "./api/move-files.js";
+import { moveFileAndInlinks } from "./api/move-files.js";
 import { getI18nInst } from "./configs/i18n.js";
 import { FolderSuggestModal } from "./target-select-modal/index.js";
 
-export default class MoveFiles extends Plugin {
+export default class Main extends Plugin {
 	async onload() {
 		const name = getI18nInst().t("Batch Move");
 
@@ -61,15 +61,20 @@ export default class MoveFiles extends Plugin {
 
 	syncFile = async (file: TFile) => {
 		new FolderSuggestModal(this.app, async (folder) => {
-			const statRes = await moveFiles(file, folder, {
-				app: this.app,
-				skipFileWhenExist: true,
-				includeInlinks: true,
-			});
+			try {
+				const statRes = await moveFileAndInlinks(file, folder, {
+					app: this.app,
+					skipFileWhenExist: true,
+					includeInlinks: true,
+				});
 
-			new Notice(
-				`Moved: ${statRes.movedCount}, Skiped: ${statRes.skipedCount}, Replaced: ${statRes.replacedCount}`,
-			);
+				new Notice(
+					`Moved: ${statRes.movedCount}, Skiped: ${statRes.skipedCount}, Replaced: ${statRes.replacedCount}`,
+				);
+			} catch (error) {
+				console.error(error);
+				new Notice(`Error: ${error.message}`);
+			}
 		}).open();
 	};
 
