@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1-beta.2](https://github.com/x-ideas/obsidian-batch-move-files/compare/v0.1.0-beta.2...v0.1.1-beta.2) (2025-01-22)
+
+
+### Bug Fixes
+
+* support embed in file ([3f4e708](https://github.com/x-ideas/obsidian-batch-move-files/commit/3f4e708b2eebb5e2f5aa3e7245cec768de4598d2))
+
 ## [0.1.0-beta.2](https://github.com/x-ideas/obsidian-batch-move-files/compare/v0.0.5-beta.2...v0.1.0-beta.2) (2024-12-26)
 
 
